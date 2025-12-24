@@ -1,0 +1,85 @@
+{% extends 'vacancies/base.html' %}
+
+{% block title %}Главная - Аналитика{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-4 fw-bold">Рынок Junior-аналитиков</h1>
+    <p class="lead text-muted">
+        Мы проанализировали вакансий по всей России.
+    </p>
+    <a href="/vacancies/" class="btn btn-primary btn-lg mt-3">Смотреть все вакансии</a>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card p-4 shadow-sm text-center bg-light">
+            <h3>Средняя зарплата начинающих специалистов: <span class="text-success fw-bold">{{ avg_salary }} ₽</span></h3>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+
+    <div class="col-md-7">
+        <div class="card p-4 shadow-sm h-100">
+            <h4 class="text-center mb-3">Топ востребованных навыков</h4>
+            <canvas id="skillsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card p-4 shadow-sm h-100">
+            <h4 class="text-center mb-3">Формат работы</h4>
+            <div style="height: 300px; display: flex; justify-content: center;">
+                <canvas id="formatChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctxSkills = document.getElementById('skillsChart').getContext('2d');
+    new Chart(ctxSkills, {
+        type: 'bar',
+        data: {
+            labels: {{ skill_names|safe }},
+            datasets: [{
+                label: 'Количество вакансий',
+                data: {{ skill_counts|safe }}, 
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const ctxFormat = document.getElementById('formatChart').getContext('2d');
+    new Chart(ctxFormat, {
+        type: 'doughnut', 
+        data: {
+            labels: ['Удаленно', 'Гибрид', 'Офис'],
+            datasets: [{
+                data: [{{ remote_count }}, {{ hybrid_count }}, {{ office_count }}],
+                backgroundColor: [
+                    '#28a745', 
+                    '#ffc107', 
+                    '#dc3545'  
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+{% endblock %}

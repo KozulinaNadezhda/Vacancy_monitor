@@ -1,0 +1,101 @@
+{% extends 'vacancies/base.html' %}
+
+{% block title %}Поиск вакансий{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card p-3 mb-4">
+            <h4 class="mb-3">Фильтры</h4>
+            <form method="get">
+                
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Город</label>
+                    <select name="city" class="form-select">
+                        <option value="">Все города</option>
+                        {% for city in cities %}
+                            <option value="{{ city }}" {% if request.GET.city == city %}selected{% endif %}>
+                                {{ city }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Опыт работы</label>
+                    <select name="experience" class="form-select">
+                        <option value="">Любой</option>
+                        <option value="Нет опыта" {% if request.GET.experience == "Нет опыта" %}selected{% endif %}>Без опыта</option>
+                        <option value="От 1 года до 3 лет" {% if request.GET.experience == "От 1 года до 3 лет" %}selected{% endif %}>1-3 года</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Формат</label>
+                    <select name="format" class="form-select">
+                        <option value="">Любой</option>
+                        <option value="Удаленная работа" {% if request.GET.format == "Удаленная работа" %}selected{% endif %}>🏠 Удаленно</option>
+                        <option value="Гибридный формат" {% if request.GET.format == "Гибридный формат" %}selected{% endif %}>🔄 Гибрид</option>
+                        <option value="На месте у работодателя" {% if request.GET.format == "На месте у работодателя" %}selected{% endif %}>🏢 Офис</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Применить</button>
+                <a href="/vacancies/" class="btn btn-outline-secondary w-100 mt-2">Сбросить</a>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <h2 class="mb-4">Найдено вакансий: {{ vacancies.count }}</h2>
+
+        {% for vacancy in vacancies %}
+        <div class="card mb-3 box-shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title">
+                        <a href="{{ vacancy.url }}" target="_blank" class="text-decoration-none">{{ vacancy.title }}</a>
+                    </h5>
+                    <span class="badge bg-success">
+                        {% if vacancy.salary_from and vacancy.salary_to %}
+                            {{ vacancy.salary_from }} - {{ vacancy.salary_to }} 
+                        {% elif vacancy.salary_from %}
+                            от {{ vacancy.salary_from }} 
+                        {% elif vacancy.salary_to %}
+                            до {{ vacancy.salary_to }} 
+                        {% else %}
+                            З/П не указана
+                        {% endif %}
+
+                        {# Вывод валюты: если RUR то значок, иначе код #}
+                        {% if vacancy.salary_from or vacancy.salary_to %}
+                            {% if vacancy.currency == 'RUR' %}₽{% else %}{{ vacancy.currency }}{% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <h6 class="card-subtitle mb-2 text-muted">{{ vacancy.employer.name }} • {{ vacancy.city }}</h6>
+                
+                <p class="card-text small">
+                    <span class="badge bg-light text-dark border">{{ vacancy.experience }}</span>
+                    <span class="badge bg-light text-dark border">{{ vacancy.employment_mode }}</span>
+                </p>
+
+                <div class="mb-2">
+                    {% for skill in vacancy.skills.all|slice:":5" %}
+                        <span class="badge bg-info text-dark">{{ skill.name }}</span>
+                    {% endfor %}
+                </div>
+
+                <a href="{{ vacancy.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Откликнуться на HH.ru</a>
+            </div>
+        </div>
+        {% empty %}
+            <div class="alert alert-warning">
+                По вашему запросу ничего не найдено.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
