@@ -34,9 +34,9 @@
                     <label class="form-label fw-bold">Формат</label>
                     <select name="format" class="form-select">
                         <option value="">Любой</option>
-                        <option value="Удаленная работа" {% if request.GET.format == "Удаленная работа" %}selected{% endif %}>🏠 Удаленно</option>
-                        <option value="Гибридный формат" {% if request.GET.format == "Гибридный формат" %}selected{% endif %}>🔄 Гибрид</option>
-                        <option value="На месте у работодателя" {% if request.GET.format == "На месте у работодателя" %}selected{% endif %}>🏢 Офис</option>
+                        <option value="Удаленная работа" {% if request.GET.format == "Удаленная работа" %}selected{% endif %}>Удаленно</option>
+                        <option value="Гибридный формат" {% if request.GET.format == "Гибридный формат" %}selected{% endif %}>Гибрид</option>
+                        <option value="На месте у работодателя" {% if request.GET.format == "На месте у работодателя" %}selected{% endif %}>Офис</option>
                     </select>
                 </div>
 
@@ -58,16 +58,19 @@
                     </h5>
                     <span class="badge bg-success">
                         {% if vacancy.salary_from and vacancy.salary_to %}
-                            {{ vacancy.salary_from }} - {{ vacancy.salary_to }} 
+                            {% if vacancy.salary_from == vacancy.salary_to %}
+                                {{ vacancy.salary_from }}
+                            {% else %}
+                                {{ vacancy.salary_from }} - {{ vacancy.salary_to }}
+                            {% endif %}
                         {% elif vacancy.salary_from %}
-                            от {{ vacancy.salary_from }} 
+                            от {{ vacancy.salary_from }}
                         {% elif vacancy.salary_to %}
-                            до {{ vacancy.salary_to }} 
+                            до {{ vacancy.salary_to }}
                         {% else %}
                             З/П не указана
                         {% endif %}
 
-                        {# Вывод валюты: если RUR то значок, иначе код #}
                         {% if vacancy.salary_from or vacancy.salary_to %}
                             {% if vacancy.currency == 'RUR' %}₽{% else %}{{ vacancy.currency }}{% endif %}
                         {% endif %}
