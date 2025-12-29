@@ -8,7 +8,11 @@ class Command(BaseCommand):
     help = 'Загрузка вакансий с HH.ru'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write("Начинаем импорт вакансий")
+        self.stdout.write("Начинаем импорт вакансий (Junior Analysts)...")
+
+        delete_threshold = datetime.now() - timedelta(days=30)
+        deleted_count, _ = Vacancy.objects.filter(published_at__lt=delete_threshold).delete()
+        self.stdout.write(f"Удалено устаревших вакансий: {deleted_count}")
 
         base_url = "https://api.hh.ru/vacancies"
 
