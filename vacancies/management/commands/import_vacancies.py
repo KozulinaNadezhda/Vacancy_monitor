@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write("Начинаем импорт вакансий (Junior Analysts)...")
 
-        delete_threshold = datetime.now() - timedelta(days=30)
+        delete_threshold = datetime.now() - timedelta(days=10)
         deleted_count, _ = Vacancy.objects.filter(published_at__lt=delete_threshold).delete()
         self.stdout.write(f"Удалено устаревших вакансий: {deleted_count}")
 
