@@ -32,11 +32,10 @@ P.S. Возможно для более быстрой и качественно
 
 ## Как запустить проект локально
 
-1.  **Клонируйте репозиторий:**
-    ```bash
-    git clone https://github.com/KozulinaNadezhda/Vacancy_monitor.git
-    cd Vacancy_monitor
-    ```
+1. **Клонируйте репозиторий:**
+   *(Убедитесь, что у вас настроены SSH-ключи для GitHub)*
+   ```bash
+   git clone git@github.com:KozulinaNadezhda/Vacancy_monitor.git
 
 2.  **Создайте и активируйте виртуальное окружение:**
     ```bash
